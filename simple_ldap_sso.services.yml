@@ -1,0 +1,10 @@
+services:
+  authentication.simple_ldap_sso:
+    class: Drupal\simple_ldap_sso\Authentication\Provider\SimpleLdapSsoAuthenticationProvider
+    arguments: ['@common.simple_ldap_sso']
+    tags:
+      - { name: authentication_provider, provider_id: simple_ldap_sso_authentication_provider, priority: 210 }
+
+  common.simple_ldap_sso:
+    class: Drupal\simple_ldap_sso\SimpleLdapSsoAuthentication
+    arguments: ['@service_container']

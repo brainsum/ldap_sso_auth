@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Contains simple_ldap_sso.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/**
+ * Implements hook_help().
+ */
+function simple_ldap_sso_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the simple_ldap_sso module.
+    case 'help.page.simple_ldap_sso':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This is the simple LDAP SSO module.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_user_logout().
+ */
+function simple_ldap_sso_user_logout($account) {
+  if (\Drupal::config('simple_ldap_sso.settings')->get('redirectOnLogout')) {
+    $redirect_url = \Drupal::config('simple_ldap_sso.settings')->get('logoutRedirectPath');
+    $redirect = new RedirectResponse(Url::fromUserInput($redirect_url)->toString());
+    $redirect->send();
+  }
+}

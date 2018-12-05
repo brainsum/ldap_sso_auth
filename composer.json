@@ -1,0 +1,14 @@
+{
+  "name": "drupal/simple_ldap_sso",
+  "type": "drupal-module",
+  "description": "This is the simple LDAP SSO module.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/simple_ldap_sso",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/simple_ldap_sso",
+    "source": "http://cgit.drupalcode.org/simple_ldap_sso"
+  },
+  "require": { }
+}
