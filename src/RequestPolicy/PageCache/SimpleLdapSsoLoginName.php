@@ -50,8 +50,9 @@ class SimpleLdapSsoLoginName implements RequestPolicyInterface {
   public function check(Request $request) {
     if (!$this->sessionConfiguration->hasSession($request)) {
       // No session stored check header sso variable of user name.
-      $config = $this->container->get('config.factory')->get('simple_ldap_sso.settings');
-      $sso_variable = $config->get('ssoVariable');
+      $sso_variable = $this->container->get('config.factory')
+        ->get('simple_ldap_sso.settings')
+        ->get('ssoVariable');
       // $request->server->set($sso_variable, 'riemann'); // For testing.
       if ($request->server->get($sso_variable) === NULL) {
         // Not contains name in sso variable allow to get page from cache.

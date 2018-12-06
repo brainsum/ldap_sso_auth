@@ -86,7 +86,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
     }
 
     $sso_variable = $this->config->get('ssoVariable');
-    // $request->server->set($sso_variable, 'riemann');
+    // $request->server->set($sso_variable, 'riemann'); // For testing.
     if ($request->server->get($sso_variable) !== NULL) {
       // Check remote user is authenticated.
       return TRUE;
@@ -107,7 +107,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
     $realm = NULL;
 
     $sso_variable = $this->config->get('ssoVariable');
-    // $request->server->set($sso_variable, 'riemann');
+    // $request->server->set($sso_variable, 'riemann'); // For testing.
     if ($request->server->get($sso_variable) !== NULL) {
       // Get name from SSO variable.
       $remote_user = $request->server->get($sso_variable);
