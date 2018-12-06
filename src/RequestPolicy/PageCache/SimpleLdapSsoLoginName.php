@@ -52,17 +52,13 @@ class SimpleLdapSsoLoginName implements RequestPolicyInterface {
       // No session stored check header sso variable of user name.
       $config = $this->container->get('config.factory')->get('simple_ldap_sso.settings');
       $sso_variable = $config->get('ssoVariable');
-      // $request->server->set($sso_variable, 'riemann');
-      if ($request->server->get($sso_variable) !== NULL) {
-        // Header contain name in sso variable no cached page need.
-        return static::DENY;
-      }
-      else {
-        // Isn't name in sso variable allow to get page from cache.
+      // $request->server->set($sso_variable, 'riemann'); // For testing.
+      if ($request->server->get($sso_variable) === NULL) {
+        // Not contains name in sso variable allow to get page from cache.
         return static::ALLOW;
       }
     }
-    // Session stored no cached page need.
+    // Session stored or sso variable contains name cached page disallow.
     return static::DENY;
   }
 
