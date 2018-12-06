@@ -8,3 +8,9 @@ services:
   common.simple_ldap_sso:
     class: Drupal\simple_ldap_sso\SimpleLdapSsoAuthentication
     arguments: ['@service_container']
+
+  simple_ldap_sso.page_cache_request_policy.simple_ldap_sso_login_name:
+    class: Drupal\simple_ldap_sso\RequestPolicy\PageCache\SimpleLdapSsoLoginName
+    arguments: ['@session_configuration', '@service_container']
+    tags:
+      - { name: page_cache_request_policy }
