@@ -4,7 +4,6 @@ namespace Drupal\simple_ldap_sso;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Component\Utility\Html;
-use Drupal\simple_ldap_sso\SimpleLdapSsoAuthenticationInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -36,7 +35,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
   /**
    * The login validator.
    *
-   * @var Drupal\ldap_authentication\Controller\LoginValidator
+   * @var \Drupal\ldap_authentication\Controller\LoginValidator
    */
   protected $validator;
 
@@ -107,11 +106,11 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
     $realm = NULL;
 
     $sso_variable = $this->config->get('ssoVariable');
-    // $request->server->set($sso_variable, 'riemann'); // For testing.
+
     if ($request->server->get($sso_variable) !== NULL) {
       // Get name from SSO variable.
       $remote_user = $request->server->get($sso_variable);
-      $remote = TRUE;
+
       if ($this->config->get('ssoSplitUserRealm')) {
         list($remote_user, $realm) = $this->splitUserNameRealm($remote_user);
       }
@@ -123,7 +122,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
         ->log('SSO raw result is username=@remote_user, (realm=@realm).', [
           '@remote_user' => $remote_user,
           '@realm' => $realm,
-          ], 'simple_ldap_sso');
+        ], 'simple_ldap_sso');
       if ($account = $this->loginRemoteUser($remote_user, $realm)) {
         // User name is valid on remote server.
         user_login_finalize($account);
@@ -146,7 +145,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
       ->log('Continuing SSO login with username=@remote_user, (realm=@realm).', [
         '@remote_user' => $remote_user,
         '@realm' => $realm,
-        ], 'simpla_ldap_sso'
+      ], 'simpla_ldap_sso'
     );
 
     return $this->validateUser($remote_user);
@@ -161,7 +160,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
     if ($authentication_successful) {
       $this->detailLog->log('Remote user has local uid @uid', [
         '@uid' => $this->validator->getDrupalUser()->id(),
-        ], 'simpla_ldap_sso');
+      ], 'simpla_ldap_sso');
       return $this->validator->getDrupalUser();
     }
     else {
@@ -189,7 +188,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
       $this->detailLog->log('Domain stripped: remote_user=@remote_user, domain=@domain', [
         '@remote_user' => $remote_user,
         '@domain' => $domain,
-        ], 'simpla_ldap_sso');
+      ], 'simpla_ldap_sso');
     }
     return $remote_user;
   }
@@ -211,13 +210,13 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
   /**
    * {@inheritdoc}
    */
-  public function checkExcludePath($path = FALSE) {
+  public function checkExcludePath($path = FALSE): bool {
 
     $result = FALSE;
     if ($path) {
       // don't derive.
     }
-    elseif ($this->request->server->get('PHP_SELF') == '/index.php') {
+    elseif ($this->request->server->get('PHP_SELF') === '/index.php') {
       $path = $this->request->getPathInfo();
     }
     else {
@@ -225,14 +224,14 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
       $path = ltrim($this->request->server->get('PHP_SELF'), '/');
     }
 
-    if (in_array($path, $this->defaultPathsToExclude())) {
+    if (\in_array($path, $this->defaultPathsToExclude())) {
       return TRUE;
     }
 
-    if (is_array($this->config->get('ssoExcludedHosts'))) {
+    if (\is_array($this->config->get('ssoExcludedHosts'))) {
       $host = $this->request->server->get('SERVER_NAME');
       foreach ($this->config->get('ssoExcludedHosts') as $host_to_check) {
-        if ($host_to_check == $host) {
+        if ($host_to_check === $host) {
           return TRUE;
         }
       }
@@ -241,7 +240,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
     if ($this->config->get('ssoExcludedPaths')) {
       $patterns = implode("\r\n", $this->config->get('ssoExcludedPaths'));
       if ($patterns) {
-        if (function_exists('drupal_get_path_alias')) {
+        if (\function_exists('drupal_get_path_alias')) {
           $path = drupal_get_path_alias($path);
         }
         $path = mb_strtolower($path);
