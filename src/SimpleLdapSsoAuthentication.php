@@ -54,6 +54,13 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
   protected $request;
 
   /**
+   * The default front page.
+   *
+   * @var string
+   */
+  protected $frontPage;
+
+  /**
    * Constructs a new SimpleLdapSsoAuthentication object.
    */
   public function __construct(ContainerInterface $container) {
@@ -62,6 +69,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
     $this->entityTypeManager = $container->get('entity_type.manager');
     $this->validator = $container->get('ldap_authentication.login_validator');
     $this->detailLog = $container->get('ldap.detail_log');
+    $this->frontPage = $container->get('config.factory')->get('system.site')->get('page.front');
   }
 
   /**
@@ -254,7 +262,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
         $replacements = [
           '|',
           '.*',
-          '\1' . preg_quote($this->frontpage, '/') . '\2',
+          '\1' . preg_quote($this->frontPage, '/') . '\2',
         ];
         $patterns_quoted = preg_quote($patterns, '/');
         $regex = '/^(' . preg_replace($to_replace, $replacements, $patterns_quoted) . ')$/';
