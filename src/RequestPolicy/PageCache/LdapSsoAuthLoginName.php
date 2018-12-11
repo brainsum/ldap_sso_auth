@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\simple_ldap_sso\RequestPolicy\PageCache;
+namespace Drupal\ldap_sso_auth\RequestPolicy\PageCache;
 
 use Drupal\Core\PageCache\RequestPolicyInterface;
 use Drupal\Core\Session\SessionConfigurationInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  * submission, the contents of a shopping cart, or other userspecific content
  * that should not be cached and displayed to other users.
  */
-class SimpleLdapSsoLoginName implements RequestPolicyInterface {
+class LdapSsoAuthLoginName implements RequestPolicyInterface {
 
   /**
    * The session configuration.
@@ -51,7 +51,7 @@ class SimpleLdapSsoLoginName implements RequestPolicyInterface {
     if (!$this->sessionConfiguration->hasSession($request)) {
       // No session stored check header sso variable of user name.
       $sso_variable = $this->container->get('config.factory')
-        ->get('simple_ldap_sso.settings')
+        ->get('ldap_sso_auth.settings')
         ->get('ssoVariable');
       // $request->server->set($sso_variable, 'riemann'); // For testing.
       if ($request->server->get($sso_variable) === NULL) {

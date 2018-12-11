@@ -1,0 +1,5 @@
+ldap_sso_auth.admin_form:
+  route_name: ldap_sso_auth.admin_form
+  title: LDAP SSO Auth
+  weight: 50
+  base_route: entity.ldap_server.collection

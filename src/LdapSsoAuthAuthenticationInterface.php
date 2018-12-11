@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\simple_ldap_sso;
+namespace Drupal\ldap_sso_auth;
 
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Interface SimpleLdapSsoAuthenticationInterface.
+ * Interface LdapSsoAuthAuthenticationInterface.
  */
-interface SimpleLdapSsoAuthenticationInterface {
+interface LdapSsoAuthAuthenticationInterface {
 
   /**
    * Set the HTTP request.

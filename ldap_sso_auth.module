@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Contains ldap_sso_auth.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/**
+ * Implements hook_help().
+ */
+function ldap_sso_auth_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the ldap_sso_auth module.
+    case 'help.page.ldap_sso_auth':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This is the LDAP SSO Auth module.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_user_logout().
+ */
+function ldap_sso_auth_user_logout($account) {
+  if (\Drupal::config('ldap_sso_auth.settings')->get('redirectOnLogout')) {
+    $redirect_url = \Drupal::config('ldap_sso_auth.settings')->get('logoutRedirectPath');
+    $redirect = new RedirectResponse(Url::fromUserInput($redirect_url)->toString());
+    $redirect->send();
+  }
+}

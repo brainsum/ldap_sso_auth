@@ -1,15 +1,16 @@
 <?php
 
-namespace Drupal\simple_ldap_sso;
+namespace Drupal\ldap_sso_auth;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Component\Utility\Html;
+use Drupal\ldap_sso_auth\LdapSsoAuthAuthenticationInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class SimpleLdapSsoAuthentication.
+ * Class LdapSsoAuthAuthentication.
  */
-class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterface {
+class LdapSsoAuthAuthentication implements LdapSsoAuththenticationInterface {
 
   /**
    * The dependency injection container.
@@ -54,22 +55,14 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
   protected $request;
 
   /**
-   * The default front page.
-   *
-   * @var string
-   */
-  protected $frontPage;
-
-  /**
-   * Constructs a new SimpleLdapSsoAuthentication object.
+   * Constructs a new LdapSsoAuthAuthentication object.
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
-    $this->config = $container->get('config.factory')->get('simple_ldap_sso.settings');
+    $this->config = $container->get('config.factory')->get('ldap_sso_auth.settings');
     $this->entityTypeManager = $container->get('entity_type.manager');
     $this->validator = $container->get('ldap_authentication.login_validator');
     $this->detailLog = $container->get('ldap.detail_log');
-    $this->frontPage = $container->get('config.factory')->get('system.site')->get('page.front');
   }
 
   /**
@@ -108,17 +101,17 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
    */
   public function authenticate(Request $request) {
     $this->request = $request;
-    $this->detailLog->log('Beginning SSO login.', [], 'simple_ldap_sso');
+    $this->detailLog->log('Beginning SSO login.', [], 'ldap_sso_auth');
 
     $remote_user = NULL;
     $realm = NULL;
 
     $sso_variable = $this->config->get('ssoVariable');
-
+    // $request->server->set($sso_variable, 'riemann'); // For testing.
     if ($request->server->get($sso_variable) !== NULL) {
       // Get name from SSO variable.
       $remote_user = $request->server->get($sso_variable);
-
+      $remote = TRUE;
       if ($this->config->get('ssoSplitUserRealm')) {
         list($remote_user, $realm) = $this->splitUserNameRealm($remote_user);
       }
@@ -130,7 +123,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
         ->log('SSO raw result is username=@remote_user, (realm=@realm).', [
           '@remote_user' => $remote_user,
           '@realm' => $realm,
-        ], 'simple_ldap_sso');
+          ], 'ldap_sso_auth');
       if ($account = $this->loginRemoteUser($remote_user, $realm)) {
         // User name is valid on remote server.
         user_login_finalize($account);
@@ -153,7 +146,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
       ->log('Continuing SSO login with username=@remote_user, (realm=@realm).', [
         '@remote_user' => $remote_user,
         '@realm' => $realm,
-      ], 'simpla_ldap_sso'
+        ], 'ldap_sso_auth'
     );
 
     return $this->validateUser($remote_user);
@@ -163,16 +156,16 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
    * {@inheritdoc}
    */
   public function validateUser($remote_user) {
-    $this->detailLog->log('Starting validation for SSO user.', [], 'simpla_ldap_sso');
+    $this->detailLog->log('Starting validation for SSO user.', [], 'ldap_sso_auth');
     $authentication_successful = $this->validator->processSsoLogin(Html::escape($remote_user));
     if ($authentication_successful) {
       $this->detailLog->log('Remote user has local uid @uid', [
         '@uid' => $this->validator->getDrupalUser()->id(),
-      ], 'simpla_ldap_sso');
+        ], 'ldap_sso_auth');
       return $this->validator->getDrupalUser();
     }
     else {
-      $this->detailLog->log('Remote user not valid.', [], 'simpla_ldap_sso');
+      $this->detailLog->log('Remote user not valid.', [], 'ldap_sso_auth');
       return FALSE;
     }
   }
@@ -196,7 +189,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
       $this->detailLog->log('Domain stripped: remote_user=@remote_user, domain=@domain', [
         '@remote_user' => $remote_user,
         '@domain' => $domain,
-      ], 'simpla_ldap_sso');
+        ], 'ldap_sso_auth');
     }
     return $remote_user;
   }
@@ -218,13 +211,13 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
   /**
    * {@inheritdoc}
    */
-  public function checkExcludePath($path = FALSE): bool {
+  public function checkExcludePath($path = FALSE) {
 
     $result = FALSE;
     if ($path) {
       // don't derive.
     }
-    elseif ($this->request->server->get('PHP_SELF') === '/index.php') {
+    elseif ($this->request->server->get('PHP_SELF') == '/index.php') {
       $path = $this->request->getPathInfo();
     }
     else {
@@ -232,14 +225,14 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
       $path = ltrim($this->request->server->get('PHP_SELF'), '/');
     }
 
-    if (\in_array($path, $this->defaultPathsToExclude())) {
+    if (in_array($path, $this->defaultPathsToExclude())) {
       return TRUE;
     }
 
-    if (\is_array($this->config->get('ssoExcludedHosts'))) {
+    if (is_array($this->config->get('ssoExcludedHosts'))) {
       $host = $this->request->server->get('SERVER_NAME');
       foreach ($this->config->get('ssoExcludedHosts') as $host_to_check) {
-        if ($host_to_check === $host) {
+        if ($host_to_check == $host) {
           return TRUE;
         }
       }
@@ -248,7 +241,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
     if ($this->config->get('ssoExcludedPaths')) {
       $patterns = implode("\r\n", $this->config->get('ssoExcludedPaths'));
       if ($patterns) {
-        if (\function_exists('drupal_get_path_alias')) {
+        if (function_exists('drupal_get_path_alias')) {
           $path = drupal_get_path_alias($path);
         }
         $path = mb_strtolower($path);
@@ -262,7 +255,7 @@ class SimpleLdapSsoAuthentication implements SimpleLdapSsoAuthenticationInterfac
         $replacements = [
           '|',
           '.*',
-          '\1' . preg_quote($this->frontPage, '/') . '\2',
+          '\1' . preg_quote($this->frontpage, '/') . '\2',
         ];
         $patterns_quoted = preg_quote($patterns, '/');
         $regex = '/^(' . preg_replace($to_replace, $replacements, $patterns_quoted) . ')$/';

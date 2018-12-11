@@ -1,34 +1,34 @@
 <?php
 
-namespace Drupal\simple_ldap_sso\Authentication\Provider;
+namespace Drupal\ldap_sso_auth\Authentication\Provider;
 
 use Drupal\Core\Authentication\AuthenticationProviderInterface;
-use Drupal\simple_ldap_sso\SimpleLdapSsoAuthenticationInterface;
+use Drupal\ldap_sso_auth\LdapSsoAuthAuthenticationInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * Class SimpleLdapSsoAuthenticationProvider.
+ * Class LdapSsoAuthAuthenticationProvider.
  */
-class SimpleLdapSsoAuthenticationProvider implements AuthenticationProviderInterface {
+class LdapSsoAuthAuthenticationProvider implements AuthenticationProviderInterface {
 
   /**
    * The request.
    *
    * @var \Symfony\Component\HttpFoundation\Request
    */
-  protected $simpleLdapSsoAuth;
+  protected $LdapSsoAuth;
 
   /**
-   * Constructs a Simple LDAP SSO authentication provider object.
+   * Constructs a LDAP SSO Auth authentication provider object.
    *
    * @param \Symfony\Component\DependencyInjection\ContainerInterface
    *   The service injection container.
    */
-  public function __construct(SimpleLdapSsoAuthenticationInterface $simple_ldap_sso_auth) {
-    $this->simpleLdapSsoAuth = $simple_ldap_sso_auth;
+  public function __construct(LdapSsoAuthAuthenticationInterface $ldap_sso_auth_auth) {
+    $this->LdapSsoAuth = $ldap_sso_auth_auth;
   }
 
   /**
@@ -42,14 +42,14 @@ class SimpleLdapSsoAuthenticationProvider implements AuthenticationProviderInter
    *   request, FALSE otherwise.
    */
   public function applies(Request $request) {
-    return $this->simpleLdapSsoAuth->applies($request);
+    return $this->LdapSsoAuth->applies($request);
   }
 
   /**
    * {@inheritdoc}
    */
   public function authenticate(Request $request) {
-    return $this->simpleLdapSsoAuth->authenticate($request);
+    return $this->LdapSsoAuth->authenticate($request);
   }
 
   /**

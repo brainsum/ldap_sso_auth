@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\simple_ldap_sso\Form;
+namespace Drupal\ldap_sso_auth\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Provides the configuration form SSO under LDAP configuration.
  */
-class SimpleLdapSsoAdminForm extends ConfigFormBase {
+class LdapSsoAuthAdminForm extends ConfigFormBase {
 
   /**
    * The server factory service.
@@ -48,21 +48,21 @@ class SimpleLdapSsoAdminForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'simple_ldap_sso_admin_form';
+    return 'ldap_sso_auth_admin_form';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['simple_ldap_sso.settings'];
+    return ['ldap_sso_auth.settings'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('simple_ldap_sso.settings');
+    $config = $this->config('ldap_sso_auth.settings');
 
     $form['information'] = [
       '#type' => 'markup',
@@ -204,7 +204,7 @@ class SimpleLdapSsoAdminForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
-    $this->config('simple_ldap_sso.settings')
+    $this->config('ldap_sso_auth.settings')
       ->set('ssoExcludedPaths', LdapAuthenticationConfiguration::linesToArray($values['ssoExcludedPaths']))
       ->set('ssoExcludedHosts', LdapAuthenticationConfiguration::linesToArray($values['ssoExcludedHosts']))
       ->set('seamlessLogin', $values['seamlessLogin'])

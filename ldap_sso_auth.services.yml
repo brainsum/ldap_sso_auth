@@ -1,0 +1,16 @@
+services:
+  authentication.ldap_sso_auth:
+    class: Drupal\ldap_sso_auth\Authentication\Provider\LdapSsoAuthAuthenticationProvider
+    arguments: ['@common.ldap_sso_auth']
+    tags:
+      - { name: authentication_provider, provider_id: ldap_sso_auth_authentication_provider, priority: 210 }
+
+  common.ldap_sso_auth:
+    class: Drupal\ldap_sso_auth\LdapSsoAuthAuthentication
+    arguments: ['@service_container']
+
+  ldap_sso_auth.page_cache_request_policy.ldap_sso_auth_login_name:
+    class: Drupal\ldap_sso_auth\RequestPolicy\PageCache\LdapSsoAuthLoginName
+    arguments: ['@session_configuration', '@service_container']
+    tags:
+      - { name: page_cache_request_policy }

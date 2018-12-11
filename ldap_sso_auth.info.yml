@@ -1,6 +1,6 @@
-name: 'Simple LDAP SSO'
+name: 'LDAP SSO Auth'
 type: module
-description: 'This is the simple LDAP SSO module.'
+description: 'This is the LDAP SSO Auth module.'
 core: 8.x
 package: 'Lightweight Directory Access Protocol'
 
@@ -8,4 +8,4 @@ dependencies:
   - ldap:ldap_servers
   - ldap:ldap_authentication
 
-configure: simple_ldap_sso.admin_form
+configure: ldap_sso_auth.admin_form

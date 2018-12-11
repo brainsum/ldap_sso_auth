@@ -1,5 +1,0 @@
-simple_ldap_sso.admin_form:
-  route_name: simple_ldap_sso.admin_form
-  title: Simple SSO
-  weight: 50
-  base_route: entity.ldap_server.collection

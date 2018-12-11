@@ -1,5 +1,5 @@
 
-Simple LDAP SSO module
+LDAP SSO Auth module
 ---------------------
 
 * Introduction
@@ -13,7 +13,7 @@ Simple LDAP SSO module
 INTRODUCTION
 ------------
 
-This Simple LDAP SSO module integrates a Drupal ...
+This LDAP SSO Auth module integrates a Drupal ...
 
 REQUIREMENTS
 ------------
@@ -32,13 +32,13 @@ Install the optimizely module as you would normally install a contributed Drupal
 module. Visit https://www.drupal.org/node/1897420 for further information.
 
 Install with composer:
-composer require drupal/simple_ldap_sso
+composer require drupal/ldap_sso_auth
 
 
 CONFIGURATION
 --------------
 
-    1. Navigate to Administration > People > LDAP servers > Simple SSO and
+    1. Navigate to Administration > People > LDAP servers > LDAP SSO Auth and
        configure as LDAP server needs it..
 
 MAINTAINERS

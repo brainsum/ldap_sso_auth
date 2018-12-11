@@ -1,0 +1,7 @@
+ldap_sso_auth.admin_form:
+ path: /admin/config/people/simple-ldap/sso-auth
+ defaults:
+   _title: LDAP SSO Auth
+   _form: \Drupal\ldap_sso_auth\Form\LdapSsoAuthAdminForm
+ requirements:
+   _permission: 'administer site configuration'

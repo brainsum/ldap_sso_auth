@@ -1,7 +1,7 @@
 {
-  "name": "brainsum/simple_ldap_sso",
+  "name": "brainsum/ldap_sso_auth",
   "type": "drupal-module",
-  "description": "This is the simple LDAP SSO module.",
+  "description": "This is the LDAP SSO Auth module.",
   "license": "GPL-2.0+",
   "minimum-stability": "dev",
   "authors": [
