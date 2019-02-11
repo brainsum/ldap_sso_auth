@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class LdapSsoAuthAuthentication.
  */
-class LdapSsoAuthAuthentication implements LdapSsoAuththenticationInterface {
+class LdapSsoAuthAuthentication implements LdapSsoAuthAuthenticationInterface {
 
   /**
    * The dependency injection container.
