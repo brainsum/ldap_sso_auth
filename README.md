@@ -44,7 +44,7 @@ CONFIGURATION
 KNOWN ISSUES
 ------------
 
-    1. Symptom: Instead of being recreated, user deleted from Drupal receive access denied. Details: when a user is logged in to Drupal, then gets deleted, it's browser still holds the session cookie and on the next request this module will still receive a session object from Drupal with the deleted user's uid. Currently no other check is running so this module will not initiate the LDAP SSO user recreation process, but will not do anything thinking that the user has a valid living session. Workaround: the user should delete cookies or start a new sole incognito window.
+Symptom: Instead of being recreated, user deleted from Drupal receive access denied. Details: when a user is logged in to Drupal, then gets deleted, it's browser still holds the session cookie and on the next request this module will still receive a session object from Drupal with the deleted user's uid. Currently no other check is running so this module will not initiate the LDAP SSO user recreation process, but will not do anything thinking that the user has a valid living session. Workaround: the user should delete cookies or start a new sole incognito window.
 
 MAINTAINERS
 -----------
