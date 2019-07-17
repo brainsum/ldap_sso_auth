@@ -55,11 +55,20 @@ class LdapSsoAuthAuthentication implements LdapSsoAuthAuthenticationInterface {
   protected $request;
 
   /**
+   * The system frontpage.
+   *
+   * @var string
+   */
+  protected $frontpage;
+
+  /**
    * Constructs a new LdapSsoAuthAuthentication object.
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
-    $this->config = $container->get('config.factory')->get('ldap_sso_auth.settings');
+    $config = $container->get('config.factory');
+    $this->config = $config->get('ldap_sso_auth.settings');
+    $this->frontpage = $config->get('system.site')->get('frontpage');
     $this->entityTypeManager = $container->get('entity_type.manager');
     $this->validator = $container->get('ldap_authentication.login_validator');
     $this->detailLog = $container->get('ldap.detail_log');
